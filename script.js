@@ -28,13 +28,23 @@ function convertToParamukLightYears(earthLightYears) {
 }
 
 /**
- * Calculate speed in light-years per year based on warp factor
+ * Calculate speed in c from warp factor
  * Speed in c = (warp factor)³
  * @param {number} warpFactor - The warp factor (e.g., 1, 2, 3)
  * @returns {number} Speed in multiples of the speed of light (c)
  */
 function calculateSpeedInC(warpFactor) {
     return Math.pow(warpFactor, 3);
+}
+
+/**
+ * Calculate warp factor from speed in c
+ * Warp factor = ∛(speed in c)
+ * @param {number} speedInC - Speed in multiples of c
+ * @returns {number} Warp factor
+ */
+function calculateWarpFactor(speedInC) {
+    return Math.cbrt(speedInC);
 }
 
 /**
@@ -74,15 +84,33 @@ function formatTime(years) {
 }
 
 /**
+ * Update the speed input label based on selected mode
+ */
+function updateSpeedLabel() {
+    const speedMode = document.getElementById('speedMode').value;
+    const speedLabel = document.getElementById('speedHelp');
+    const inputPlaceholder = document.getElementById('speedInput');
+    
+    if (speedMode === 'warp') {
+        speedLabel.textContent = 'Speed in c = (warp factor)³';
+        inputPlaceholder.placeholder = 'Enter warp factor';
+    } else {
+        speedLabel.textContent = 'Warp factor = ∛(speed in c)';
+        inputPlaceholder.placeholder = 'Enter speed in c';
+    }
+}
+
+/**
  * Main calculation and display
  */
 function calculateTrip() {
     const distance = parseFloat(document.getElementById('distance').value);
     const distanceUnit = document.getElementById('distanceUnit').value;
-    const warpFactor = parseFloat(document.getElementById('warpFactor').value);
+    const speedMode = document.getElementById('speedMode').value;
+    const speedInput = parseFloat(document.getElementById('speedInput').value);
     
     // Validate inputs
-    if (isNaN(distance) || isNaN(warpFactor) || distance < 0 || warpFactor < 0) {
+    if (isNaN(distance) || isNaN(speedInput) || distance < 0 || speedInput < 0) {
         alert('Please enter valid positive numbers');
         return;
     }
@@ -91,14 +119,33 @@ function calculateTrip() {
     const distanceEarthLy = convertToEarthLightYears(distance, distanceUnit);
     const distanceParamukLy = convertToParamukLightYears(distanceEarthLy);
     
-    // Perform calculations
-    const speedInC = calculateSpeedInC(warpFactor);
+    // Calculate speed in c and warp factor based on input mode
+    let speedInC, warpFactor;
+    if (speedMode === 'warp') {
+        warpFactor = speedInput;
+        speedInC = calculateSpeedInC(warpFactor);
+    } else {
+        speedInC = speedInput;
+        warpFactor = calculateWarpFactor(speedInC);
+    }
+    
+    // Perform travel time calculation
     const travelTime = calculateTravelTime(distanceEarthLy, speedInC);
     
     // Display results
-    document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} LY`;
-    document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} PLY`;
-    document.getElementById('resultWarpFactor').textContent = `${warpFactor.toFixed(2)}`;
+    document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} ly`;
+    document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} ly`;
+    
+    // Update the speed display label
+    const resultSpeedLabel = document.getElementById('resultSpeedLabel');
+    if (speedMode === 'warp') {
+        resultSpeedLabel.textContent = 'Warp Factor';
+        document.getElementById('resultWarpFactor').textContent = `${warpFactor.toFixed(2)}`;
+    } else {
+        resultSpeedLabel.textContent = 'Speed (c)';
+        document.getElementById('resultWarpFactor').textContent = `${speedInC.toFixed(2)}`;
+    }
+    
     document.getElementById('resultSpeed').textContent = `${speedInC.toFixed(2)}c`;
     document.getElementById('resultTime').textContent = formatTime(travelTime);
     
@@ -106,8 +153,13 @@ function calculateTrip() {
     document.getElementById('result').classList.remove('hidden');
 }
 
-// Event listener
+// Event listeners
 document.getElementById('calculatorForm').addEventListener('submit', function(e) {
     e.preventDefault();
     calculateTrip();
 });
+
+document.getElementById('speedMode').addEventListener('change', updateSpeedLabel);
+
+// Initialize labels on page load
+window.addEventListener('DOMContentLoaded', updateSpeedLabel);
