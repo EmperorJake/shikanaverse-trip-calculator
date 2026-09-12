@@ -1,6 +1,8 @@
 # Shikanaverse Trip Calculator
 
-An interstellar trip calculator for the Shikanaverse science fiction RPG.
+An interstellar trip calculator for the Shikanaverse science fiction worldbuilding project and RPG.
+
+The web app can be found at: https://emperorjake.github.io/shikanaverse-trip-calculator/
 
 ## Features
 
@@ -59,8 +61,7 @@ Works in all modern browsers that support:
 
 ## Future Enhancements
 
-- Add fuel consumption calculations
-- Support for relativistic effects
-- Save favorite routes
+- Shikanaverse Time Units
+- Acceleration Factor
 - Multiple ship presets
 - Distance presets for famous locations in the Shikanaverse
