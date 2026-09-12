@@ -2,6 +2,31 @@
  * Warp Calculator Functions
  */
 
+// Conversion constant: 1 Pamaruk light year = 1.28 Earth light years
+const PAMARUK_TO_EARTH = 1.28;
+
+/**
+ * Convert distance to Earth light years
+ * @param {number} distance - The distance value
+ * @param {string} unit - The unit ('earth' or 'pamaruk')
+ * @returns {number} Distance in Earth light years
+ */
+function convertToEarthLightYears(distance, unit) {
+    if (unit === 'pamaruk') {
+        return distance * PAMARUK_TO_EARTH;
+    }
+    return distance;
+}
+
+/**
+ * Convert Earth light years to Pamaruk light years
+ * @param {number} earthLightYears - Distance in Earth light years
+ * @returns {number} Distance in Pamaruk light years
+ */
+function convertToParamukLightYears(earthLightYears) {
+    return earthLightYears / PAMARUK_TO_EARTH;
+}
+
 /**
  * Calculate speed in light-years per year based on warp factor
  * Speed in c = (warp factor)³
@@ -53,6 +78,7 @@ function formatTime(years) {
  */
 function calculateTrip() {
     const distance = parseFloat(document.getElementById('distance').value);
+    const distanceUnit = document.getElementById('distanceUnit').value;
     const warpFactor = parseFloat(document.getElementById('warpFactor').value);
     
     // Validate inputs
@@ -61,12 +87,17 @@ function calculateTrip() {
         return;
     }
     
+    // Convert to Earth light years
+    const distanceEarthLy = convertToEarthLightYears(distance, distanceUnit);
+    const distanceParamukLy = convertToParamukLightYears(distanceEarthLy);
+    
     // Perform calculations
     const speedInC = calculateSpeedInC(warpFactor);
-    const travelTime = calculateTravelTime(distance, speedInC);
+    const travelTime = calculateTravelTime(distanceEarthLy, speedInC);
     
     // Display results
-    document.getElementById('resultDistance').textContent = `${distance.toFixed(2)} ly`;
+    document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} ly`;
+    document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} ly`;
     document.getElementById('resultWarpFactor').textContent = `${warpFactor.toFixed(2)}`;
     document.getElementById('resultSpeed').textContent = `${speedInC.toFixed(2)}c`;
     document.getElementById('resultTime').textContent = formatTime(travelTime);
