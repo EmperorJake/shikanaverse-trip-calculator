@@ -132,20 +132,10 @@ function calculateTrip() {
     // Perform travel time calculation
     const travelTime = calculateTravelTime(distanceEarthLy, speedInC);
     
-    // Display results
+    // Display results - always show both warp factor and speed in c
     document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} ly`;
     document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} ly`;
-    
-    // Update the speed display label
-    const resultSpeedLabel = document.getElementById('resultSpeedLabel');
-    if (speedMode === 'warp') {
-        resultSpeedLabel.textContent = 'Warp Factor';
-        document.getElementById('resultWarpFactor').textContent = `${warpFactor.toFixed(2)}`;
-    } else {
-        resultSpeedLabel.textContent = 'Speed (c)';
-        document.getElementById('resultWarpFactor').textContent = `${speedInC.toFixed(2)}`;
-    }
-    
+    document.getElementById('resultWarpFactor').textContent = `${warpFactor.toFixed(2)}`;
     document.getElementById('resultSpeed').textContent = `${speedInC.toFixed(2)}c`;
     document.getElementById('resultTime').textContent = formatTime(travelTime);
     
