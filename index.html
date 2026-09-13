@@ -14,6 +14,33 @@
         </header>
 
         <main>
+            <!-- Starship Selector Section -->
+            <div class="starship-section">
+                <div class="starship-display">
+                    <img id="shipImage" src="ships/placeholder.svg" alt="Starship" class="ship-image">
+                </div>
+
+                <div class="starship-nav">
+                    <button type="button" id="prevShip" class="nav-button">❮</button>
+                    <button type="button" id="nextShip" class="nav-button">❯</button>
+                </div>
+
+                <div class="starship-stats">
+                    <div class="stat-row">
+                        <span class="stat-label">Name:</span>
+                        <span class="stat-value" id="shipName">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Class:</span>
+                        <span class="stat-value" id="shipClass">-</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Max Warp:</span>
+                        <span class="stat-value" id="shipMaxWarp">-</span>
+                    </div>
+                </div>
+            </div>
+
             <form id="calculatorForm">
                 <div class="form-group">
                     <label for="distance">Distance</label>
@@ -27,8 +54,8 @@
                             step="0.1"
                         >
                         <select id="distanceUnit">
-                            <option value="earth">Earth LY</option>
-                            <option value="pamaruk">Pamaruk LY</option>
+                            <option value="earth">Earth Light Years</option>
+                            <option value="pamaruk">Pamaruk Light Years</option>
                         </select>
                     </div>
                 </div>
@@ -59,11 +86,11 @@
                 <h2>Trip Details</h2>
                 <div class="result-grid">
                     <div class="result-item">
-                        <span class="result-label">Distance (LY)</span>
+                        <span class="result-label">Distance (Earth ly)</span>
                         <span class="result-value" id="resultDistanceEarth"></span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Distance (PLY)</span>
+                        <span class="result-label">Distance (Pamaruk ly)</span>
                         <span class="result-value" id="resultDistanceParamuk"></span>
                     </div>
                     <div class="result-item">
@@ -87,6 +114,7 @@
         </footer>
     </div>
 
+    <script src="ships/ships-data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
