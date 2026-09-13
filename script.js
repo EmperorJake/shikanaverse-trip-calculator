@@ -5,6 +5,9 @@
 // Conversion constant: 1 Pamaruk light year = 1.28 Earth light years
 const PAMARUK_TO_EARTH = 1.28;
 
+// Current starship index
+let currentShipIndex = 0;
+
 /**
  * Convert distance to Earth light years
  * @param {number} distance - The distance value
@@ -101,6 +104,35 @@ function updateSpeedLabel() {
 }
 
 /**
+ * Display the current starship
+ */
+function displayCurrentShip() {
+    if (STARSHIPS.length === 0) return;
+    
+    const ship = STARSHIPS[currentShipIndex];
+    document.getElementById('shipImage').src = ship.image;
+    document.getElementById('shipName').textContent = ship.name;
+    document.getElementById('shipClass').textContent = ship.class;
+    document.getElementById('shipMaxWarp').textContent = ship.maxWarp;
+}
+
+/**
+ * Navigate to the next starship
+ */
+function nextShip() {
+    currentShipIndex = (currentShipIndex + 1) % STARSHIPS.length;
+    displayCurrentShip();
+}
+
+/**
+ * Navigate to the previous starship
+ */
+function prevShip() {
+    currentShipIndex = (currentShipIndex - 1 + STARSHIPS.length) % STARSHIPS.length;
+    displayCurrentShip();
+}
+
+/**
  * Main calculation and display
  */
 function calculateTrip() {
@@ -133,9 +165,9 @@ function calculateTrip() {
     const travelTime = calculateTravelTime(distanceEarthLy, speedInC);
     
     // Display results - always show both warp factor and speed in c
-    document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} LY`;
-    document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} PLY`;
-    document.getElementById('resultWarpFactor').textContent = `Wp ${warpFactor.toFixed(2)}`;
+    document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} ly`;
+    document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} ly`;
+    document.getElementById('resultWarpFactor').textContent = `${warpFactor.toFixed(2)}`;
     document.getElementById('resultSpeed').textContent = `${speedInC.toFixed(2)}c`;
     document.getElementById('resultTime').textContent = formatTime(travelTime);
     
@@ -151,5 +183,11 @@ document.getElementById('calculatorForm').addEventListener('submit', function(e)
 
 document.getElementById('speedMode').addEventListener('change', updateSpeedLabel);
 
-// Initialize labels on page load
-window.addEventListener('DOMContentLoaded', updateSpeedLabel);
+document.getElementById('nextShip').addEventListener('click', nextShip);
+document.getElementById('prevShip').addEventListener('click', prevShip);
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', function() {
+    updateSpeedLabel();
+    displayCurrentShip();
+});
