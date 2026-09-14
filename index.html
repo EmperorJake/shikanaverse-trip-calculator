@@ -9,21 +9,37 @@
 <body>
     <div class="container">
         <header>
-            <h1>⚡ Shikanaverse Trip Calculator</h1>
-            <p class="subtitle">Calculate your interstellar journey time</p>
+            <div class="brand-block">
+                <p class="eyebrow">Pamaruk Navigation Systems // Series 07</p>
+                <h1>Shikanaverse <span>Trip Computer</span></h1>
+            </div>
+            <div class="system-status" aria-label="System status: online">
+                <span class="status-light" aria-hidden="true"></span>
+                <div>
+                    <strong>Nav-Core Online</strong>
+                    <span>Interstellar transit computer</span>
+                </div>
+            </div>
         </header>
 
         <main>
             <!-- Starship Selector Section -->
             <div class="starship-section">
-                <h2 class="starship-heading">Select A Starship</h2>
+                <div class="panel-heading">
+                    <span class="panel-index">01</span>
+                    <h2 class="starship-heading">Vessel Registry</h2>
+                    <span class="panel-state">Select craft</span>
+                </div>
                 <div class="starship-display">
                     <img id="shipImage" src="ships/placeholder.svg" alt="Starship" class="ship-image">
+                    <span class="reticle reticle-top" aria-hidden="true"></span>
+                    <span class="reticle reticle-bottom" aria-hidden="true"></span>
                 </div>
 
                 <div class="starship-nav">
-                    <button type="button" id="prevShip" class="nav-button">❮</button>
-                    <button type="button" id="nextShip" class="nav-button">❯</button>
+                    <button type="button" id="prevShip" class="nav-button" aria-label="Previous starship">&#9664; Prev</button>
+                    <span class="nav-readout">Craft index</span>
+                    <button type="button" id="nextShip" class="nav-button" aria-label="Next starship">Next &#9654;</button>
                 </div>
 
                 <div class="starship-stats">
@@ -63,6 +79,11 @@
             </div>
 
             <form id="calculatorForm">
+                <div class="panel-heading">
+                    <span class="panel-index">02</span>
+                    <h2>Flight Plan</h2>
+                    <span class="panel-state">Input</span>
+                </div>
                 <div class="form-group">
                     <label for="distance">Distance</label>
                     <div class="input-group">
@@ -100,11 +121,15 @@
                     <small id="speedHelp">Speed in c = (warp factor)³</small>
                 </div>
 
-                <button type="submit" class="btn-calculate">Calculate Trip Time</button>
+                <button type="submit" class="btn-calculate"><span>Run Transit Solution</span></button>
             </form>
 
             <div id="result" class="result hidden">
-                <h2>Trip Details</h2>
+                <div class="panel-heading">
+                    <span class="panel-index">03</span>
+                    <h2>Transit Solution</h2>
+                    <span class="panel-state solution-state">Computed</span>
+                </div>
                 <div class="result-grid">
                     <div class="result-item">
                         <span class="result-label">Distance (Earth ly)</span>
@@ -151,7 +176,8 @@
         </main>
 
         <footer>
-            <p>For the Shikanaverse RPG</p>
+            <p>SHIKANAVERSE RPG // LONG-RANGE TRANSIT SUBSYSTEM</p>
+            <span>SYS.2900.07</span>
         </footer>
     </div>
 
