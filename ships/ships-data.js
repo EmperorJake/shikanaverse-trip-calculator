@@ -16,19 +16,19 @@ const STARSHIPS = [
         class: "Experimental",
         maxWarp: 5,
         image: "ships/sg_sc1.png"
-    }
+    },
     {
         name: "PSY Courier Ship",
         class: "Courier",
         maxWarp: 20,
         image: "ships/psy_courier_ship.png"
-    }
+    },
     {
         name: "PSY Breadbox",
         class: "Freighter",
         maxWarp: 40,
         image: "ships/psy_breadbox.png"
-    }
+    },
     {
         name: "TSI General Mk1",
         class: "Transport",
