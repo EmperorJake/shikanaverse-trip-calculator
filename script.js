@@ -147,8 +147,13 @@ function displayCurrentShip() {
     const ship = STARSHIPS[currentShipIndex];
     document.getElementById('shipImage').src = ship.image;
     document.getElementById('shipName').textContent = ship.name;
-    document.getElementById('shipClass').textContent = ship.class;
+    document.getElementById('shipBuilder').textContent = ship.builder;
+    document.getElementById('shipBuildYear').textContent = ship.buildYear;
+    document.getElementById('shipType').textContent = ship.type;
+    document.getElementById('shipEngineClass').textContent = ship.engineClass;
+    document.getElementById('shipLength').textContent = ship.shipLengthMetres;
     document.getElementById('shipMaxWarp').textContent = ship.maxWarp;
+    document.getElementById('shipCruiseWarp').textContent = ship.cruiseWarp;
     updateSpeedLabel();
 }
 
