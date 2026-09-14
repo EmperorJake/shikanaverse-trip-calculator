@@ -64,6 +64,26 @@ function getCurrentShipSpeedLimit() {
 }
 
 /**
+ * Get the selected ship's cruise speed for the selected speed mode.
+ * @returns {number} Cruise warp factor or cruise speed in c
+ */
+function getCurrentShipCruiseSpeed() {
+    const ship = STARSHIPS[currentShipIndex];
+    const speedMode = document.getElementById('speedMode').value;
+
+    return speedMode === 'warp'
+        ? ship.cruiseWarp
+        : calculateSpeedInC(ship.cruiseWarp);
+}
+
+/**
+ * Fill the speed input with the selected ship's cruise speed.
+ */
+function setSpeedInputToCruise() {
+    document.getElementById('speedInput').value = getCurrentShipCruiseSpeed();
+}
+
+/**
  * Apply the selected ship's maximum speed to the speed input.
  */
 function updateSpeedInputLimit() {
@@ -96,28 +116,26 @@ function calculateTravelTime(distanceLightYears, speedInC) {
 }
 
 /**
- * Format time in years to a readable string
+ * Break a duration into digital-clock time units.
  * @param {number} years - Time in years
- * @returns {string} Formatted time string
+ * @returns {{years: number, days: number, hours: number, minutes: number}}
  */
-function formatTime(years) {
-    if (!isFinite(years)) return "∞ (No movement)";
-    
-    if (years < 1) {
-        const days = years * 365.25;
-        if (days < 1) {
-            const hours = days * 24;
-            return `${hours.toFixed(2)} hours`;
-        }
-        return `${days.toFixed(2)} days`;
-    }
-    
-    if (years < 1000) {
-        return `${years.toFixed(2)} years`;
-    }
-    
-    const millennia = years / 1000;
-    return `${millennia.toFixed(3)} millennia`;
+function getTimeComponents(years) {
+    const minutesPerHour = 60;
+    const minutesPerDay = 24 * minutesPerHour;
+    const minutesPerYear = 365.25 * minutesPerDay;
+    let remainingMinutes = Math.round(years * minutesPerYear);
+
+    const wholeYears = Math.floor(remainingMinutes / minutesPerYear);
+    remainingMinutes -= wholeYears * minutesPerYear;
+
+    const days = Math.floor(remainingMinutes / minutesPerDay);
+    remainingMinutes -= days * minutesPerDay;
+
+    const hours = Math.floor(remainingMinutes / minutesPerHour);
+    const minutes = remainingMinutes % minutesPerHour;
+
+    return { years: wholeYears, days, hours, minutes };
 }
 
 /**
@@ -136,6 +154,14 @@ function updateSpeedLabel() {
         speedLabel.textContent = `Warp factor = ∛(speed in c). ${limitText}`;
         inputPlaceholder.placeholder = 'Enter speed in c';
     }
+}
+
+/**
+ * Refresh the speed field when its unit changes.
+ */
+function handleSpeedModeChange() {
+    updateSpeedLabel();
+    setSpeedInputToCruise();
 }
 
 /**
@@ -163,7 +189,7 @@ function displayCurrentShip() {
 function nextShip() {
     currentShipIndex = (currentShipIndex + 1) % STARSHIPS.length;
     displayCurrentShip();
-    document.getElementById('speedInput').value = getCurrentShipSpeedLimit();
+    setSpeedInputToCruise();
 }
 
 /**
@@ -172,7 +198,7 @@ function nextShip() {
 function prevShip() {
     currentShipIndex = (currentShipIndex - 1 + STARSHIPS.length) % STARSHIPS.length;
     displayCurrentShip();
-    document.getElementById('speedInput').value = getCurrentShipSpeedLimit();
+    setSpeedInputToCruise();
 }
 
 /**
@@ -186,7 +212,7 @@ function calculateTrip() {
     const maximumSpeedInput = getCurrentShipSpeedLimit();
     
     // Validate inputs
-    if (isNaN(distance) || isNaN(speedInput) || distance < 0 || speedInput < 0) {
+    if (isNaN(distance) || isNaN(speedInput) || distance < 0 || speedInput <= 0) {
         alert('Please enter valid positive numbers');
         return;
     }
@@ -213,13 +239,17 @@ function calculateTrip() {
     
     // Perform travel time calculation
     const travelTime = calculateTravelTime(distanceEarthLy, speedInC);
+    const time = getTimeComponents(travelTime);
     
     // Display results - always show both warp factor and speed in c
     document.getElementById('resultDistanceEarth').textContent = `${distanceEarthLy.toFixed(2)} LY`;
     document.getElementById('resultDistanceParamuk').textContent = `${distanceParamukLy.toFixed(2)} PLY`;
     document.getElementById('resultWarpFactor').textContent = `Wp ${warpFactor.toFixed(2)}`;
     document.getElementById('resultSpeed').textContent = `${speedInC.toFixed(2)}c`;
-    document.getElementById('resultTime').textContent = formatTime(travelTime);
+    document.getElementById('resultYears').textContent = String(time.years);
+    document.getElementById('resultDays').textContent = String(time.days).padStart(3, '0');
+    document.getElementById('resultHours').textContent = String(time.hours).padStart(2, '0');
+    document.getElementById('resultMinutes').textContent = String(time.minutes).padStart(2, '0');
     
     // Show result section
     document.getElementById('result').classList.remove('hidden');
@@ -231,7 +261,7 @@ document.getElementById('calculatorForm').addEventListener('submit', function(e)
     calculateTrip();
 });
 
-document.getElementById('speedMode').addEventListener('change', updateSpeedLabel);
+document.getElementById('speedMode').addEventListener('change', handleSpeedModeChange);
 
 document.getElementById('nextShip').addEventListener('click', nextShip);
 document.getElementById('prevShip').addEventListener('click', prevShip);
@@ -240,4 +270,5 @@ document.getElementById('prevShip').addEventListener('click', prevShip);
 window.addEventListener('DOMContentLoaded', function() {
     updateSpeedLabel();
     displayCurrentShip();
+    setSpeedInputToCruise();
 });

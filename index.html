@@ -35,7 +35,7 @@
                         <span class="stat-value" id="shipBuilder">-</span>
                     </div>
                     <div class="stat-row">
-                        <span class="stat-label">Build Year:</span>
+                        <span class="stat-label">Introduction Year:</span>
                         <span class="stat-value" id="shipBuildYear">-</span>
                     </div>
                     <div class="stat-row">
@@ -121,9 +121,29 @@
                         <span class="result-label">Speed (c)</span>
                         <span class="result-value" id="resultSpeed"></span>
                     </div>
-                    <div class="result-item full-width">
-                        <span class="result-label">Travel Time</span>
-                        <span class="result-value" id="resultTime"></span>
+                    <div class="travel-time-panel full-width">
+                        <span class="travel-time-heading">Estimated Travel Time</span>
+                        <div class="digital-clock" role="timer" aria-label="Estimated travel time">
+                            <div class="clock-unit">
+                                <span class="clock-value" id="resultYears">0</span>
+                                <span class="clock-label">Years</span>
+                            </div>
+                            <span class="clock-separator" aria-hidden="true">:</span>
+                            <div class="clock-unit">
+                                <span class="clock-value" id="resultDays">000</span>
+                                <span class="clock-label">Days</span>
+                            </div>
+                            <span class="clock-separator" aria-hidden="true">:</span>
+                            <div class="clock-unit">
+                                <span class="clock-value" id="resultHours">00</span>
+                                <span class="clock-label">Hours</span>
+                            </div>
+                            <span class="clock-separator" aria-hidden="true">:</span>
+                            <div class="clock-unit">
+                                <span class="clock-value" id="resultMinutes">00</span>
+                                <span class="clock-label">Minutes</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

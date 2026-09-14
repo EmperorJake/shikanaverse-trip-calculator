@@ -26,7 +26,7 @@ const STARSHIPS = [
         name: "PSY Courier Ship",
         builder: "Pamaruk Ship Yards",
         buildYear: "1700",
-        type: "Couier",
+        type: "Courier",
         engineClass: "X",
         shipLengthMetres: "41m",
         maxWarp: 25,
