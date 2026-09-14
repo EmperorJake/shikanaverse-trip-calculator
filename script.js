@@ -51,6 +51,40 @@ function calculateWarpFactor(speedInC) {
 }
 
 /**
+ * Get the maximum allowed value for the selected speed mode.
+ * @returns {number} Maximum warp factor or maximum speed in c
+ */
+function getCurrentShipSpeedLimit() {
+    const ship = STARSHIPS[currentShipIndex];
+    const speedMode = document.getElementById('speedMode').value;
+
+    return speedMode === 'warp'
+        ? ship.maxWarp
+        : calculateSpeedInC(ship.maxWarp);
+}
+
+/**
+ * Apply the selected ship's maximum speed to the speed input.
+ */
+function updateSpeedInputLimit() {
+    if (STARSHIPS.length === 0) return;
+
+    const speedInput = document.getElementById('speedInput');
+    const speedMode = document.getElementById('speedMode').value;
+    const maximum = getCurrentShipSpeedLimit();
+
+    speedInput.max = maximum;
+
+    if (speedInput.value !== '' && Number(speedInput.value) > maximum) {
+        speedInput.value = maximum;
+    }
+
+    return speedMode === 'warp'
+        ? `Maximum for this ship: Warp ${maximum}`
+        : `Maximum for this ship: ${maximum.toLocaleString()}c (Warp ${STARSHIPS[currentShipIndex].maxWarp})`;
+}
+
+/**
  * Calculate travel time
  * @param {number} distanceLightYears - Distance in light years
  * @param {number} speedInC - Speed in multiples of c
@@ -93,12 +127,13 @@ function updateSpeedLabel() {
     const speedMode = document.getElementById('speedMode').value;
     const speedLabel = document.getElementById('speedHelp');
     const inputPlaceholder = document.getElementById('speedInput');
+    const limitText = updateSpeedInputLimit();
     
     if (speedMode === 'warp') {
-        speedLabel.textContent = 'Speed in c = (warp factor)³';
+        speedLabel.textContent = `Speed in c = (warp factor)³. ${limitText}`;
         inputPlaceholder.placeholder = 'Enter warp factor';
     } else {
-        speedLabel.textContent = 'Warp factor = ∛(speed in c)';
+        speedLabel.textContent = `Warp factor = ∛(speed in c). ${limitText}`;
         inputPlaceholder.placeholder = 'Enter speed in c';
     }
 }
@@ -114,6 +149,7 @@ function displayCurrentShip() {
     document.getElementById('shipName').textContent = ship.name;
     document.getElementById('shipClass').textContent = ship.class;
     document.getElementById('shipMaxWarp').textContent = ship.maxWarp;
+    updateSpeedLabel();
 }
 
 /**
@@ -122,6 +158,7 @@ function displayCurrentShip() {
 function nextShip() {
     currentShipIndex = (currentShipIndex + 1) % STARSHIPS.length;
     displayCurrentShip();
+    document.getElementById('speedInput').value = getCurrentShipSpeedLimit();
 }
 
 /**
@@ -130,6 +167,7 @@ function nextShip() {
 function prevShip() {
     currentShipIndex = (currentShipIndex - 1 + STARSHIPS.length) % STARSHIPS.length;
     displayCurrentShip();
+    document.getElementById('speedInput').value = getCurrentShipSpeedLimit();
 }
 
 /**
@@ -140,10 +178,17 @@ function calculateTrip() {
     const distanceUnit = document.getElementById('distanceUnit').value;
     const speedMode = document.getElementById('speedMode').value;
     const speedInput = parseFloat(document.getElementById('speedInput').value);
+    const maximumSpeedInput = getCurrentShipSpeedLimit();
     
     // Validate inputs
     if (isNaN(distance) || isNaN(speedInput) || distance < 0 || speedInput < 0) {
         alert('Please enter valid positive numbers');
+        return;
+    }
+
+    if (speedInput > maximumSpeedInput) {
+        const unit = speedMode === 'warp' ? 'warp' : 'c';
+        alert(`The selected ship's maximum speed is ${maximumSpeedInput.toLocaleString()} ${unit}.`);
         return;
     }
     
