@@ -8,6 +8,12 @@ const PAMARUK_TO_EARTH = 1.28;
 // Current starship index
 let currentShipIndex = 0;
 
+// Recalculate live after the first successful transit solution.
+let hasCalculatedTrip = false;
+
+// Remember the prior unit so speed mode changes can convert the current value.
+let currentSpeedMode = 'warp';
+
 /**
  * Convert distance to Earth light years
  * @param {number} distance - The distance value
@@ -157,11 +163,25 @@ function updateSpeedLabel() {
 }
 
 /**
- * Refresh the speed field when its unit changes.
+ * Convert the current speed value when its unit changes.
  */
 function handleSpeedModeChange() {
+    const speedMode = document.getElementById('speedMode').value;
+    const speedInput = document.getElementById('speedInput');
+    const currentSpeed = parseFloat(speedInput.value);
+
+    if (!isNaN(currentSpeed) && currentSpeedMode !== speedMode) {
+        const convertedSpeed = currentSpeedMode === 'warp'
+            ? calculateSpeedInC(currentSpeed)
+            : calculateWarpFactor(currentSpeed);
+
+        // Avoid displaying floating-point noise while retaining useful precision.
+        speedInput.value = Number(convertedSpeed.toFixed(6));
+    }
+
+    currentSpeedMode = speedMode;
     updateSpeedLabel();
-    setSpeedInputToCruise();
+    refreshCalculation();
 }
 
 /**
@@ -190,6 +210,7 @@ function nextShip() {
     currentShipIndex = (currentShipIndex + 1) % STARSHIPS.length;
     displayCurrentShip();
     setSpeedInputToCruise();
+    refreshCalculation();
 }
 
 /**
@@ -199,12 +220,29 @@ function prevShip() {
     currentShipIndex = (currentShipIndex - 1 + STARSHIPS.length) % STARSHIPS.length;
     displayCurrentShip();
     setSpeedInputToCruise();
+    refreshCalculation();
+}
+
+/**
+ * Hide a result that no longer matches the current form values.
+ */
+function hideResult() {
+    document.getElementById('result').classList.add('hidden');
+}
+
+/**
+ * Recalculate without interrupting the user while they edit a field.
+ */
+function refreshCalculation() {
+    if (hasCalculatedTrip) {
+        calculateTrip({ showErrors: false });
+    }
 }
 
 /**
  * Main calculation and display
  */
-function calculateTrip() {
+function calculateTrip({ showErrors = true } = {}) {
     const distance = parseFloat(document.getElementById('distance').value);
     const distanceUnit = document.getElementById('distanceUnit').value;
     const speedMode = document.getElementById('speedMode').value;
@@ -213,14 +251,18 @@ function calculateTrip() {
     
     // Validate inputs
     if (isNaN(distance) || isNaN(speedInput) || distance < 0 || speedInput <= 0) {
-        alert('Please enter valid positive numbers');
-        return;
+        hideResult();
+        if (showErrors) alert('Please enter valid positive numbers');
+        return false;
     }
 
     if (speedInput > maximumSpeedInput) {
+        hideResult();
         const unit = speedMode === 'warp' ? 'warp' : 'c';
-        alert(`The selected ship's maximum speed is ${maximumSpeedInput.toLocaleString()} ${unit}.`);
-        return;
+        if (showErrors) {
+            alert(`The selected ship's maximum speed is ${maximumSpeedInput.toLocaleString()} ${unit}.`);
+        }
+        return false;
     }
     
     // Convert to Earth light years
@@ -253,6 +295,8 @@ function calculateTrip() {
     
     // Show result section
     document.getElementById('result').classList.remove('hidden');
+    hasCalculatedTrip = true;
+    return true;
 }
 
 // Event listeners
@@ -263,11 +307,16 @@ document.getElementById('calculatorForm').addEventListener('submit', function(e)
 
 document.getElementById('speedMode').addEventListener('change', handleSpeedModeChange);
 
+document.getElementById('distance').addEventListener('input', refreshCalculation);
+document.getElementById('distanceUnit').addEventListener('change', refreshCalculation);
+document.getElementById('speedInput').addEventListener('input', refreshCalculation);
+
 document.getElementById('nextShip').addEventListener('click', nextShip);
 document.getElementById('prevShip').addEventListener('click', prevShip);
 
 // Initialize on page load
 window.addEventListener('DOMContentLoaded', function() {
+    currentSpeedMode = document.getElementById('speedMode').value;
     updateSpeedLabel();
     displayCurrentShip();
     setSpeedInputToCruise();
