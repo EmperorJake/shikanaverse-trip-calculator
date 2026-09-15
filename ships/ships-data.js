@@ -46,7 +46,7 @@ const STARSHIPS = [
     },
     {
         name: "TSI General Mk1",
-        builder: "Tarco Starship Industries",
+        builder: "Tarco Group",
         buildYear: "2707",
         type: "Transport",
         engineClass: "A",
